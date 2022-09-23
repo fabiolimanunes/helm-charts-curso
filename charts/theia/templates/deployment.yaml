@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "fabio-chart.fullname" . }}
+  name: {{ include "theia.fullname" . }}
   labels:
-    {{- include "fabio-chart.labels" . | nindent 4 }}
+    {{- include "theia.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "fabio-chart.selectorLabels" . | nindent 6 }}
+      {{- include "theia.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,13 +18,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "fabio-chart.selectorLabels" . | nindent 8 }}
+        {{- include "theia.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "fabio-chart.serviceAccountName" . }}
+      serviceAccountName: {{ include "theia.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -39,12 +39,12 @@ spec:
               protocol: TCP
           {{- with .Values.livenessProbe }}
           livenessProbe:
-            {{- toYaml . | nindent 8 }} 
-          {{- end }}   
-          {{- with .Values.readinessProbe }}
-          readinessProbe:
             {{- toYaml . | nindent 12 }}
-          {{- end }} 
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe: 
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
